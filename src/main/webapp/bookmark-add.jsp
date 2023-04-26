@@ -17,7 +17,7 @@
 <body>
 <h1>북마크 관리</h1>
 <div>
-    <a href="bookmark.jsp">홈</a> | <a href="history.jsp">위치 히스토리 목록</a> | <a href="bookmark.jsp">Open API 와이파이 정보 가져오기</a> | <a href="bookmark.jsp">즐겨 찾기 보기</a> | <a href="bookmark.jsp">즐겨 찾기 그룹 관리</a>
+    <a href="index.jsp">홈</a> | <a href="history.jsp">위치 히스토리 목록</a> | <a href="dbupdate.jsp">Open API 와이파이 정보 가져오기</a> | <a href="bookmark-list.jsp">즐겨 찾기 보기</a> | <a href="bookmark.jsp">즐겨 찾기 그룹 관리</a>
 </div>
 <br>
 <div>

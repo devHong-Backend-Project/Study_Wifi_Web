@@ -27,4 +27,9 @@ function fetchLocation(){
     main();
 }
 
+function displayNone(){
+    alert("??")
+    document.getElementById("before").style.display = "none";
+}
+
 locBtn.addEventListener('click',fetchLocation);

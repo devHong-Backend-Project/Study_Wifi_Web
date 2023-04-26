@@ -1,4 +1,8 @@
-<%--
+<%@ page import="wifi.HttpRequest" %>
+<%@ page import="java.nio.DoubleBuffer" %>
+<%@ page import="wifi.Wifi" %>
+<%@ page import="java.util.List" %>
+<%@ page import="wifi.WifiService" %><%--
   Created by IntelliJ IDEA.
   User: hongseungmin
   Date: 2023/04/18
@@ -10,13 +14,10 @@
     String lat = request.getParameter("LAT");
     String lnt = request.getParameter("LNT");
 
-    if (lat!=null) {
-
-    }else{
+    if (lat == null){
         lat = "0.0";
         lnt = "0.0";
     }
-
 %>
 <html>
 <head>
@@ -31,7 +32,7 @@
 <body>
     <h1>와이파이 정보 구하기</h1>
     <div>
-        <a href="index.jsp">홈</a> | <a href="history.jsp">위치 히스토리 목록</a> | <a href="dbupdate.jsp">Open API 와이파이 정보 가져오기</a> | <a href="bookmark-list.jsp">즐겨 찾기 보기</a> | <a href="bookmark.jsp">즐겨 찾기 그룹 관리</a> | <a href="detail.jsp">와이파이 상세 정보 창</a>
+        <a href="index.jsp">홈</a> | <a href="history.jsp">위치 히스토리 목록</a> | <a href="dbupdate.jsp">Open API 와이파이 정보 가져오기</a> | <a href="bookmark-list.jsp">즐겨 찾기 보기</a> | <a href="bookmark.jsp">즐겨 찾기 그룹 관리</a>
     </div>
     <br>
     <div>
@@ -60,29 +61,22 @@
                 <th>Y좌표</th>
                 <th>작업일자</th>
             </tr>
-            <tr>
-                <td colspan="17" align="center" height="60">위치 정보를 입력한 후에 조회해 주세요.</td>
-            </tr>
-            <tr style="display:none">
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-                <td>?</td>
-            </tr>
-
+            <%
+                String tdTag = "<tr><td colspan=\"17\" align=\"center\" height=\"60\" id=\"before\">위치 정보를 입력한 후에 조회해 주세요.</td></tr>";
+                if (lat!="0.0"){
+                    tdTag = "";
+                }
+            %>
+            <%=tdTag%>
+            <%
+                String htmlTag = "";
+                if (lat!="0.0") {
+                    Double lat_ = Double.parseDouble(lat);
+                    Double lnt_ = Double.parseDouble(lnt);
+                    htmlTag = WifiService.getWifiTable(20,lat_,lnt_);
+                }
+            %>
+            <%=htmlTag%>
         </table>
     </div>
     <script type="text/javascript" src="js/my_location.js"></script>
