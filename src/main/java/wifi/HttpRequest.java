@@ -16,8 +16,6 @@ import java.util.List;
 
 public class HttpRequest {
 
-
-
     public static Integer getTotalCount(OkHttpClient client) throws IOException {
         Request request = new Request.Builder()
                 .url("http://openapi.seoul.go.kr:8088/7275616250676d7233317868675579/json/TbPublicWifiInfo/1/1/")
@@ -32,7 +30,7 @@ public class HttpRequest {
     }
 
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static Integer WifiApiReq() throws IOException, SQLException {
 
         OkHttpClient client = new OkHttpClient();
 
@@ -58,6 +56,7 @@ public class HttpRequest {
             else{System.out.println("insert failed");}
             startIndex = endIndex + 1;
             }
+        return totalCount;
         }
 
         //{"X_SWIFI_MGR_NO":"---GR000001",

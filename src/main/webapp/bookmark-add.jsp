@@ -22,7 +22,7 @@
 <br>
 <div>
     <table>
-        <form>
+        <form action="bookmark-add-submit.jsp" method="post">
             <tr height="30">
                 <td width="25%" align="center" bgcolor="#228b22">북마크 이름</td>
                 <td style="color:black"><input type="text" name="bookmark-name"></td>

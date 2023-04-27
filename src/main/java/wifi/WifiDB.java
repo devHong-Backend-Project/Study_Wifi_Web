@@ -9,6 +9,8 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,6 +94,187 @@ public class WifiDB {
         } catch (Exception e) {
             System.out.println(e);
             return false;
+        }
+    }
+
+    public static void insertHistory(double lat, double lnt, String date) throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            //Statement stmt = conn.createStatement();
+            String sql = "INSERT INTO TB_HISTORY (LAT,LNT,DT) values (?,?,?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setDouble(1, lat);
+            pstmt.setDouble(2, lnt);
+            pstmt.setString(3, date);
+
+            pstmt.executeUpdate();
+        } catch(SQLException e){
+            e.printStackTrace();
+        } finally {
+            //if (!rs.isClosed())  rs.close();
+            if (!pstmt.isClosed()) pstmt.close();
+            if (!conn.isClosed()) conn.close();
+        }
+    }
+
+
+    public static boolean insertBookmarkGroup(String bookmarkName, String order) throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int rowCnt = -1;
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            //Statement stmt = conn.createStatement();
+            String sql = "INSERT INTO TB_BOOKMARK_GROUP (GROUP_NAME, ORDER_NO, CREATE_AT) values (?,?,?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, bookmarkName);
+            pstmt.setInt(2, Integer.parseInt(order));
+            String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            pstmt.setString(3, date);
+
+            rowCnt = pstmt.executeUpdate();
+        } catch(SQLException e){
+            e.printStackTrace();
+        } finally {
+            //if (!rs.isClosed())  rs.close();
+            if (!pstmt.isClosed()) pstmt.close();
+            if (!conn.isClosed()) conn.close();
+            if (rowCnt == -1){
+                return false;
+            }else return true;
+        }
+    }
+
+    public static boolean insertBookmarkList(String id, String wifiName, String wid) throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int rowCnt = -1;
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            //Statement stmt = conn.createStatement();
+            String sql = "INSERT INTO TB_BOOKMARK (GROUP_ID, WIFI_NM, CREATE_AT, WIFI_ID) values (?,?,?,?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, Integer.parseInt(id));
+            pstmt.setString(2, wifiName);
+            String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            pstmt.setString(3, date);
+            pstmt.setInt(4, Integer.parseInt(wid));
+
+            rowCnt = pstmt.executeUpdate();
+        } catch(SQLException e){
+            e.printStackTrace();
+        } finally {
+            //if (!rs.isClosed())  rs.close();
+            if (!pstmt.isClosed()) pstmt.close();
+            if (!conn.isClosed()) conn.close();
+            if (rowCnt == -1){
+                return false;
+            }else return true;
+        }
+    }
+
+    public static List<BookmarkGroup> getBookmarkGroup() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        List<BookmarkGroup> lst = null;
+
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            stmt = conn.createStatement();
+            String sql = "SELECT * FROM TB_BOOKMARK_GROUP ORDER BY ORDER_NO ASC";
+
+            rs = stmt.executeQuery(sql);
+            lst = new ArrayList<>();
+            while (rs.next()){
+                BookmarkGroup bookmarkGroup = new BookmarkGroup();
+                bookmarkGroup.setGROUP_ID(rs.getInt("GROUP_ID"));
+                bookmarkGroup.setGROUP_NAME(rs.getString("GROUP_NAME"));
+                bookmarkGroup.setORDER_NO(rs.getInt("ORDER_NO"));
+                bookmarkGroup.setCREATE_AT(rs.getString("CREATE_AT"));
+                bookmarkGroup.setUPDATE_AT(rs.getString("UPDATE_AT"));
+
+                lst.add(bookmarkGroup);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            if (!rs.isClosed())  rs.close();
+            if (!stmt.isClosed()) stmt.close();
+            if (!conn.isClosed()) conn.close();
+
+            return lst;
+        }
+    }
+
+    public static List<Bookmark> getBookmarkList() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        List<Bookmark> lst = null;
+
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            stmt = conn.createStatement();
+//            String sql = "SELECT TB_BOOKMARK.BOOKMARK_ID, TB_BOOKMARK_GROUP.GROUP_NAME, TB_BOOKMAR.WIFI_NM FROM TB_BOOKMARK INNER JOIN TB_BOOKMARK_GROUP ON TB_BOOKMARK.GROUP_ID=TB_BOOKMARK_GROUP.GROUP_ID;";
+
+            String sql = "SELECT TB_BOOKMARK.*, TB_BOOKMARK_GROUP.GROUP_NAME FROM TB_BOOKMARK INNER JOIN TB_BOOKMARK_GROUP ON TB_BOOKMARK.GROUP_ID=TB_BOOKMARK_GROUP.GROUP_ID;";
+
+            rs = stmt.executeQuery(sql);
+            lst = new ArrayList<>();
+            while (rs.next()){
+                Bookmark bookmark = new Bookmark();
+                bookmark.setBOOKMARK_ID(rs.getInt("BOOKMARK_ID"));
+                bookmark.setGROUP_ID(rs.getInt("GROUP_ID"));
+                bookmark.setGROUP_NAME(rs.getString("GROUP_NAME"));
+                bookmark.setWIFI_NM(rs.getString("WIFI_NM"));
+                bookmark.setCREATE_AT(rs.getString("CREATE_AT"));
+                bookmark.setWIFI_ID(rs.getInt("WIFI_ID"));
+
+                lst.add(bookmark);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            if (!rs.isClosed())  rs.close();
+            if (!stmt.isClosed()) stmt.close();
+            if (!conn.isClosed()) conn.close();
+
+            return lst;
         }
     }
 
@@ -199,6 +382,10 @@ public class WifiDB {
             Double LNT = rs.getDouble("LNT");
             String WORK_DT = rs.getString("WORK_DT");
 
+            if (lat == 0 && lnt == 0){
+                lat = LAT;
+                lnt = LNT;
+            }
             Double dis = WifiService.distance(lat,lnt,LAT,LNT);
 
             wifi.setWIFI_ID(WIFI_ID);
@@ -226,5 +413,177 @@ public class WifiDB {
         if (!conn.isClosed()) conn.close();
 
         return wifi;
+    }
+
+    public static List<History> getHistory() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        List<History> lst = null;
+
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            stmt = conn.createStatement();
+            String sql = "SELECT * FROM TB_HISTORY";
+
+            rs = stmt.executeQuery(sql);
+            lst = new ArrayList<>();
+            while (rs.next()){
+                History history = new History();
+                history.setHISTORY_ID(rs.getInt("HISTORY_ID"));
+                history.setLAT(rs.getDouble("LAT"));
+                history.setLNT(rs.getDouble("LNT"));
+                history.setDT(rs.getString("DT"));
+
+                lst.add(history);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            if (!rs.isClosed())  rs.close();
+            if (!stmt.isClosed()) stmt.close();
+            if (!conn.isClosed()) conn.close();
+
+            return lst;
+        }
+    }
+
+    public static void deleteAllWifiInfo() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            String sql = "DELETE FROM TB_WIFI_INFO";
+            pstmt = conn.prepareStatement(sql);
+            int rowCnt = pstmt.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            if (!pstmt.isClosed()) pstmt.close();
+            if (!conn.isClosed()) conn.close();
+        }
+    }
+
+    public static void deleteHistory(String id) throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            String sql = "DELETE FROM TB_HISTORY WHERE HISTORY_ID=?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,Integer.parseInt(id));
+            int rowCnt = pstmt.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            if (!pstmt.isClosed()) pstmt.close();
+            if (!conn.isClosed()) conn.close();
+        }
+    }
+
+    public static boolean deleteBookmarkGroup(String id) throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int rowCnt = -1;
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            String sql = "DELETE FROM TB_BOOKMARK_GROUP WHERE GROUP_ID=?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,Integer.parseInt(id));
+            rowCnt = pstmt.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            if (!pstmt.isClosed()) pstmt.close();
+            if (!conn.isClosed()) conn.close();
+            if (rowCnt == -1){
+                return false;
+            }else return true;
+        }
+    }
+
+    public static boolean deleteBookmarkList(String id) throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int rowCnt = -1;
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            String sql = "DELETE FROM TB_BOOKMARK WHERE BOOKMARK_ID=?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,Integer.parseInt(id));
+            rowCnt = pstmt.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            if (!pstmt.isClosed()) pstmt.close();
+            if (!conn.isClosed()) conn.close();
+            if (rowCnt == -1){
+                return false;
+            }else return true;
+        }
+    }
+
+    public static boolean updateBookmarkGroup(String id, String bm, String order) throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int rowCnt = -1;
+        try{
+            conn = DriverManager.getConnection(url, user, password);
+            String sql = "UPDATE TB_BOOKMARK_GROUP SET GROUP_NAME=?, ORDER_NO=?, UPDATE_AT=? WHERE GROUP_ID=?";
+            String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,bm);
+            pstmt.setInt(2,Integer.parseInt(order));
+            pstmt.setString(3,date);
+            pstmt.setInt(4,Integer.parseInt(id));
+            rowCnt = pstmt.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            if (!pstmt.isClosed()) pstmt.close();
+            if (!conn.isClosed()) conn.close();
+            if (rowCnt == -1){
+                return false;
+            }else return true;
+        }
     }
 }

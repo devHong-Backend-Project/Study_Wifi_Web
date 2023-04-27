@@ -1,4 +1,4 @@
-<%--
+<%@ page import="wifi.WifiService" %><%--
   Created by IntelliJ IDEA.
   User: hongseungmin
   Date: 2023/04/18
@@ -6,6 +6,12 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String htmlTag = WifiService.getBookmarkGroupTable();
+    if (htmlTag.equals("")){
+        htmlTag = "<tr><td colspan=\"17\" align=\"center\" height=\"60\">북마크 그룹이 존재하지 않습니다.</td></tr>";
+    }
+%>
 <html>
 <head>
     <style>
@@ -35,17 +41,7 @@
                 <th>수정일자</th>
                 <th>비고</th>
             </tr>
-            <tr>
-                <td colspan="17" align="center" height="60">정보가 존재하지 않습니다.</td>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>내 집 근처</td>
-                <td>1</td>
-                <td>2020</td>
-                <td>2021</td>
-                <td align="center"><a href="bookmark-edit.jsp">수정</a> <a href="bookmark-delete.jsp">삭제</a></td>
-            </tr>
+            <%=htmlTag%>
         </table>
     </div>
 </body>

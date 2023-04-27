@@ -2,7 +2,11 @@
 <%@ page import="java.nio.DoubleBuffer" %>
 <%@ page import="wifi.Wifi" %>
 <%@ page import="java.util.List" %>
-<%@ page import="wifi.WifiService" %><%--
+<%@ page import="wifi.WifiService" %>
+<%@ page import="wifi.WifiDB" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.format.DateTimeFormatter" %><%--
   Created by IntelliJ IDEA.
   User: hongseungmin
   Date: 2023/04/18
@@ -77,6 +81,12 @@
                 }
             %>
             <%=htmlTag%>
+            <%
+                if (lat!="0.0"){
+                    String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    WifiDB.insertHistory(Double.parseDouble(lat),Double.parseDouble(lnt),dateTime);
+                }
+            %>
         </table>
     </div>
     <script type="text/javascript" src="js/my_location.js"></script>

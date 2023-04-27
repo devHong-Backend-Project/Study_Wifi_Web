@@ -32,31 +32,6 @@ public class WifiService {
         }
 
         return htmlTag;
-
-        //        <tr height="30">
-//            <td width="25%" align="center" bgcolor="#228b22">거리(Km)</td>
-//            <td style="color:black">1km</td>
-//        </tr>
-//        Double LAT = w.getLAT();
-//        Double LNT = w.getLNT();
-//        Double dis = WifiService.distance(lat,lnt,LAT,LNT);
-//
-//        Integer WIFI_ID = w.getWIFI_ID();
-//        String MGR_NO = w.getMGR_NO();
-//        String WRDOFC = w.getWRDOFC();
-//        String WIFI_NM = w.getWIFI_NM();
-//        String ADRES1 = w.getADRES1();
-//        String ADRES2 = w.getADRES2();
-//        String INSTL_FLOOR = w.getINSTL_FLOOR();
-//        String INSTL_TY = w.getINSTL_TY();
-//        String INSTL_MBY = w.getINSTL_MBY();
-//        String SVC_SE = w.getSVC_SE();
-//        String WIFI_TY = w.getWIFI_TY();
-//        String INSTL_YEAR = w.getINSTL_YEAR();
-//        String INOUT_DOOR = w.getINOUT_DOOR();
-//        String WIFI_ENV = w.getWIFI_ENV();
-//        String WORK_DT = w.getWORK_DT();
-
     }
 
     public static String getWifiTable(int num, double lat, double lnt) throws SQLException, ParseException {
@@ -68,8 +43,6 @@ public class WifiService {
             Double LAT = w.getLAT();
             Double LNT = w.getLNT();
             Double dis = WifiService.distance(lat,lnt,LAT,LNT);
-            System.out.println(dis);
-            System.out.println(w.getDistance());
             Integer WIFI_ID = w.getWIFI_ID();
             htmlTag += String.format("<tr id=\"%d\">",WIFI_ID);
             htmlTag += "<td>"+Math.round(dis*10000)/10000.0+"</td>";
@@ -85,6 +58,7 @@ public class WifiService {
             htmlTag += String.format("<input type=\"hidden\" name=\"LAT2\" value=\"%.7f\"/>",lat);
             htmlTag += String.format("<input type=\"hidden\" name=\"LNT2\" value=\"%.7f\"/>",lnt);
             htmlTag += String.format("<input type=\"hidden\" name=\"ID\" value=\"%d\"/>",WIFI_ID);
+            htmlTag += String.format("<input type=\"hidden\" name=\"WIFI_NM\" value=\"%s\"/>",WIFI_NM);
             htmlTag += String.format("<td><a href=\"#\" onclick=\"document.getElementById('detail%d').submit()\">"+WIFI_NM+"</a></td>",WIFI_ID);
             htmlTag += "</form>";
 
@@ -127,6 +101,114 @@ public class WifiService {
             String WORK_DT = w.getWORK_DT();
             htmlTag += "<td>"+WORK_DT+"</td>";
 
+            htmlTag += "</tr>";
+        }
+
+        return htmlTag;
+    }
+
+    public static String getHistoryTable() throws SQLException {
+        List<History> lst = WifiDB.getHistory();
+        String htmlTag = "";
+        for(History history:lst){
+            Integer ID = history.getHISTORY_ID();
+            double lat = history.getLAT();
+            double lnt = history.getLNT();
+            String dt = history.getDT();
+
+            htmlTag += "<form action=\"history-delete-submit.jsp\" method=\"get\">";
+            htmlTag += "<tr>";
+            htmlTag += String.format("<input type=\"hidden\" name=\"ID\" value=\"%d\" />",ID);
+            htmlTag += String.format("<td>%d</td>",ID);
+            htmlTag += String.format("<td>%.7f</td>",lat);
+            htmlTag += String.format("<td>%.7f</td>",lnt);
+            htmlTag += String.format("<td>%s</td>",dt);
+            htmlTag += "<td width=\"10%\" align=\"center\">";
+            htmlTag += "<button type=\"submit\" class=\"history-delete\">삭제</button>";
+            htmlTag += "</td>";
+            htmlTag += "</tr>";
+            htmlTag += "</form>";
+        }
+
+        return htmlTag;
+    }
+
+    public static String getBookmarkGroupTable() throws SQLException {
+        List<BookmarkGroup> lst = WifiDB.getBookmarkGroup();
+        String htmlTag = "";
+        for(BookmarkGroup bookmarkGroup:lst){
+            Integer ID = bookmarkGroup.getGROUP_ID();
+            String groupName = bookmarkGroup.getGROUP_NAME();
+            Integer orderNo = bookmarkGroup.getORDER_NO();
+            String createAt = bookmarkGroup.getCREATE_AT();
+            String updateAt = bookmarkGroup.getUPDATE_AT();
+            if (updateAt==null) updateAt="";
+
+            htmlTag += String.format("<form id=\"edit%d\"action=\"bookmark-edit.jsp\" method=\"get\">",ID);
+            htmlTag += "<tr>";
+            htmlTag += String.format("<input type=\"hidden\" name=\"ID\" value=\"%d\" />",ID);
+            htmlTag += String.format("<input type=\"hidden\" name=\"bm\" value=\"%s\" />",groupName);
+            htmlTag += String.format("<input type=\"hidden\" name=\"order\" value=\"%d\" />",orderNo);
+            htmlTag += "</form>";
+            htmlTag += String.format("<form id=\"delete%d\"action=\"bookmark-delete.jsp\" method=\"get\">",ID);
+            htmlTag += "<tr>";
+            htmlTag += String.format("<input type=\"hidden\" name=\"ID\" value=\"%d\" />",ID);
+            htmlTag += String.format("<input type=\"hidden\" name=\"bm\" value=\"%s\" />",groupName);
+            htmlTag += String.format("<input type=\"hidden\" name=\"order\" value=\"%d\" />",orderNo);
+            htmlTag += "</form>";
+            htmlTag += String.format("<td>%d</td>",ID);
+            htmlTag += String.format("<td>%s</td>",groupName);
+            htmlTag += String.format("<td>%d</td>",orderNo);
+            htmlTag += String.format("<td>%s</td>",createAt);
+            htmlTag += String.format("<td>%s</td>",updateAt);
+            htmlTag += String.format("<td align=\"center\"><a href=\"#\" onclick=\"document.getElementById('edit%d').submit()\" >수정</a> <a href=\"#\" onclick=\"document.getElementById('delete%d').submit()\">삭제</a></td>",ID,ID);
+            htmlTag += "</tr>";
+        }
+
+        return htmlTag;
+    }
+
+    public static String getBookmarkGroupList() throws SQLException {
+        List<BookmarkGroup> lst = WifiDB.getBookmarkGroup();
+        String htmlTag = "";
+        for(BookmarkGroup bookmarkGroup:lst){
+            Integer ID = bookmarkGroup.getGROUP_ID();
+            String groupName = bookmarkGroup.getGROUP_NAME();
+
+            htmlTag += String.format("<option value=\"%d\">%s</option>",ID,groupName);
+        }
+
+        return htmlTag;
+    }
+
+    public static String getBookmarkTable() throws SQLException {
+        List<Bookmark> lst = WifiDB.getBookmarkList();
+        String htmlTag = "";
+        for(Bookmark bookmark:lst){
+            Integer ID = bookmark.getBOOKMARK_ID();
+            String groupName = bookmark.getGROUP_NAME();
+            String wifiName = bookmark.getWIFI_NM();
+            String date = bookmark.getCREATE_AT();
+            Integer WID = bookmark.getWIFI_ID();
+
+            htmlTag += "<tr>";
+            htmlTag += String.format("<form id=\"bm-delete%d\" action=\"bookmark-list-delete.jsp\" method=\"post\">",ID);
+            htmlTag += String.format("<input type=\"hidden\" name=\"bm\" value=\"%s\"/>",groupName);
+            htmlTag += String.format("<input type=\"hidden\" name=\"WIFI_NM\" value=\"%s\"/>",wifiName);
+            htmlTag += String.format("<input type=\"hidden\" name=\"DT\" value=\"%s\"/>",date);
+            htmlTag += String.format("<input type=\"hidden\" name=\"BID\" value=\"%d\"/>",ID);
+            htmlTag += "</form>";
+            htmlTag += String.format("<td>%d</td>",ID);
+            htmlTag += String.format("<td>%s</td>",groupName);
+            htmlTag += String.format("<form id=\"wifi%d\" action=\"detail.jsp\" method=\"get\">",WID);
+            htmlTag += String.format("<input type=\"hidden\" name=\"LAT2\" value=\"0\"/>");
+            htmlTag += String.format("<input type=\"hidden\" name=\"LNT2\" value=\"0\"/>");
+            htmlTag += String.format("<input type=\"hidden\" name=\"ID\" value=\"%d\"/>",WID);
+            htmlTag += String.format("<input type=\"hidden\" name=\"WIFI_NM\" value=\"%s\"/>",wifiName);
+            htmlTag += String.format("<td><a href=\"#\" onclick=\"document.getElementById('wifi%d').submit()\">"+wifiName+"</a></td>",WID);
+            htmlTag += "</form>";
+            htmlTag += String.format("<td>%s</td>",date);
+            htmlTag += String.format("<td align=\"center\"><a href=\"#\" onclick=\"document.getElementById('bm-delete%d').submit()\">삭제</a></td>",ID);
             htmlTag += "</tr>";
         }
 

@@ -6,6 +6,14 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    request.setCharacterEncoding("UTF-8");
+    String BID = request.getParameter("BID");
+    String bm = request.getParameter("bm");
+    String WIFI_NM = request.getParameter("WIFI_NM");
+    String DT = request.getParameter("DT");
+
+%>
 <html>
 <head>
     <style>
@@ -22,18 +30,23 @@
 <br>
 <div>
     <table>
-        <form>
+        <form action="bookmark-list-delete-submit.jsp" method="post">
+            <input type="hidden" name="BID" value="<%=BID%>" />
             <tr height="30">
                 <td width="25%" align="center" bgcolor="#228b22" style="color:white">북마크 이름</td>
-                <td style="color:black"><input type="text" name="bookmark-name"></td>
+                <td style="color:black"><%=bm%></td>
             </tr>
             <tr height="30">
-                <td width="25%" align="center" bgcolor="#228b22" style="color:white">순서</td>
-                <td style="color:black"><input type="number" name="order"></td>
+                <td width="25%" align="center" bgcolor="#228b22" style="color:white">와이파이명</td>
+                <td style="color:black"><%=WIFI_NM%></td>
+            </tr>
+            <tr height="30">
+                <td width="25%" align="center" bgcolor="#228b22" style="color:white">등록일자</td>
+                <td style="color:black"><%=DT%></td>
             </tr>
             <tr height="30">
                 <td colspan="2" align="center">
-                    <a href="bookmark.jsp">돌아가기</a> | <button type="submit">삭제</button>
+                    <a href="bookmark-list.jsp">돌아가기</a> | <button type="submit">삭제</button>
                 </td>
             </tr>
         </form>

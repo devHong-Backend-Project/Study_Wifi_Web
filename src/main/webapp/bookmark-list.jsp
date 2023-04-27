@@ -1,4 +1,7 @@
-<%--
+<%@ page import="wifi.Bookmark" %>
+<%@ page import="java.util.List" %>
+<%@ page import="wifi.WifiDB" %>
+<%@ page import="wifi.WifiService" %><%--
   Created by IntelliJ IDEA.
   User: hongseungmin
   Date: 2023/04/18
@@ -6,6 +9,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String htmlTag = WifiService.getBookmarkTable();
+%>
 <html>
 <head>
     <style>
@@ -30,16 +36,12 @@
             <th width="30%">등록일자</th>
             <th>비고</th>
         </tr>
-        <tr>
-            <td colspan="17" align="center" height="60">즐겨찾기가 없습니다.</td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>내 집 근처</td>
-            <td>우리집</td>
-            <td>2020</td>
-            <td align="center"><a href="bookmark-list-delete.jsp">삭제</a></td>
-        </tr>
+        <%
+            if (htmlTag.equals("")){
+                htmlTag = "<tr><td colspan=\"17\" align=\"center\" height=\"60\">즐겨찾기가 없습니다.</td></tr>";
+            }
+        %>
+        <%=htmlTag%>
     </table>
 </div>
 </body>

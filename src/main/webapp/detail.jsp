@@ -1,4 +1,7 @@
-<%@ page import="wifi.WifiService" %><%--
+<%@ page import="wifi.WifiService" %>
+<%@ page import="wifi.BookmarkGroup" %>
+<%@ page import="java.util.List" %>
+<%@ page import="wifi.WifiDB" %><%--
   Created by IntelliJ IDEA.
   User: hongseungmin
   Date: 2023/04/18
@@ -6,6 +9,15 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    List<BookmarkGroup> lst = WifiDB.getBookmarkGroup();
+    String htmlTag = WifiService.getBookmarkGroupList();
+
+    Double lat = Double.parseDouble(request.getParameter("LAT2"));
+    Double lnt = Double.parseDouble(request.getParameter("LNT2"));
+    Integer id = Integer.parseInt(request.getParameter("ID"));
+    String WIFI_NM = request.getParameter("WIFI_NM");
+%>
 <html>
 <head>
     <style>
@@ -21,21 +33,19 @@
 </div>
 <br>
 <div>
-    <form action="#">
-        <select id="bookmark">
+    <form action="bookmark-list-add.jsp">
+        <select id="bookmark" name="GID">
             <option selected>북마크 그룹 이름 선택</option>
-            <option value="test">test</option>
+            <%=htmlTag%>
         </select>
+        <input type="hidden" name="WIFI_NM" value="<%=WIFI_NM%>" />
+        <input type="hidden" name="WID" value="<%=id%>" />
         <button type="submit">즐겨찾기 추가하기</button>
     </form>
 </div>
 <div>
     <table>
         <%
-            Double lat = Double.parseDouble(request.getParameter("LAT2"));
-            Double lnt = Double.parseDouble(request.getParameter("LNT2"));
-            Integer id = Integer.parseInt(request.getParameter("ID"));
-
             String detailTable = WifiService.getDetailTable(lat, lnt, id);
         %>
         <%=detailTable%>

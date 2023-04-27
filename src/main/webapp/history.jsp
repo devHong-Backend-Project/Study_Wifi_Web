@@ -1,11 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: hongseungmin
-  Date: 2023/04/18
-  Time: 7:28 PM
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="wifi.WifiService" %>
+<%@ page import="wifi.WifiDB" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String htmlTag = WifiService.getHistoryTable();
+    if (htmlTag.equals("")){
+        htmlTag = "<tr><td colspan=\"17\" align=\"center\" height=\"60\">조회 기록이 없습니다.</td></tr>";
+    }
+%>
 <html>
 <head>
     <style>
@@ -30,19 +31,9 @@
             <th>조회일자</th>
             <th>비고</th>
         </tr>
-        <tr>
-            <td colspan="17" align="center" height="60">조회 기록이 없습니다.</td>
-        </tr>
-        <tr>
-            <td>?</td>
-            <td>?</td>
-            <td>?</td>
-            <td>?</td>
-            <td width="10%" align="center">
-                <button>삭제</button>
-            </td>
-        </tr>
+        <%=htmlTag%>
     </table>
 </div>
+<script type="text/javascript" src="js/my_location.js"></script>
 </body>
 </html>
