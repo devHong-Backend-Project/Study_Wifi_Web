@@ -1,5 +1,4 @@
 <%@ page import="wifi.WifiService" %>
-<%@ page import="wifi.WifiDB" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String htmlTag = WifiService.getHistoryTable();

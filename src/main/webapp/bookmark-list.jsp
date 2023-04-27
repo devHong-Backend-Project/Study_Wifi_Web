@@ -1,6 +1,3 @@
-<%@ page import="wifi.Bookmark" %>
-<%@ page import="java.util.List" %>
-<%@ page import="wifi.WifiDB" %>
 <%@ page import="wifi.WifiService" %><%--
   Created by IntelliJ IDEA.
   User: hongseungmin

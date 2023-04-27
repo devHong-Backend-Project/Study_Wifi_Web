@@ -9,8 +9,6 @@
 <%
     request.setCharacterEncoding("UTF-8");
     String ID = request.getParameter("ID");
-    String bm = request.getParameter("bm");
-    String order = request.getParameter("order");
 
     boolean success = WifiDB.deleteBookmarkGroup(ID);
     String htmlTag = "";
