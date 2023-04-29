@@ -14,10 +14,10 @@
 ## ERD
 <img width="643" alt="Mission1_ERD" src="https://user-images.githubusercontent.com/100022877/235304675-c5c4d8b1-2872-45b9-9dc0-8d6e1742e21a.png">
 
-WIFI_INFO 테이블 : 서울시가 API로 제공해주는 공용WIFI 정보를 저장하기 위한 테이블
-HISTORY 테이블 : 자신의 위치를 조회한 시점을 저장하기 위한 테이블
-BOOKMARK 테이블 : 특정 와이파이를 즐겨찾기로 설정하기 위한 테이블 
-BOOKMARK_GROUP 테이블 : 즐겨찾기 그룹 정보를 저장하기 위한 테이블
+- WIFI_INFO 테이블 : 서울시가 API로 제공해주는 공용WIFI 정보를 저장하기 위한 테이블
+- HISTORY 테이블 : 자신의 위치를 조회한 시점을 저장하기 위한 테이블
+- BOOKMARK 테이블 : 특정 와이파이를 즐겨찾기로 설정하기 위한 테이블 
+- BOOKMARK_GROUP 테이블 : 즐겨찾기 그룹 정보를 저장하기 위한 테이블
 
 ## 웹 사용 영상
 추후 게시 예정
