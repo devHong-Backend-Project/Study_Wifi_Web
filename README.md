@@ -4,11 +4,10 @@
 
 
 ## 활용한 기술스택 
-1. 서울시 공공API 활용 https://data.seoul.go.kr/dataList/OA-20883/S/1/datasetView.do
-2. MYSQL - DBeaver
-3. JAVA Maven Dynamic Web Project - JSP 
-4. StarUML - ERD 작성에 활용 
-5. Intellij - IDE
+- 서울시 공공API 활용 https://data.seoul.go.kr/dataList/OA-20883/S/1/datasetView.do
+- MYSQL
+- JAVA Maven Dynamic Web Project - JSP 
+- Intellij - IDE
 
 
 ## ERD
@@ -19,8 +18,6 @@
 - BOOKMARK 테이블 : 특정 와이파이를 즐겨찾기로 설정하기 위한 테이블 
 - BOOKMARK_GROUP 테이블 : 즐겨찾기 그룹 정보를 저장하기 위한 테이블
 
-## 웹 사용 영상
-추후 게시 예정
 
 ## Trouble shooting
 https://velog.io/@dev_hong/Project-WiFi-%EC%9B%B9%EC%84%9C%EB%B9%84%EC%8A%A4-TroubleShooting
